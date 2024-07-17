@@ -114,7 +114,7 @@ def main():
                 plot_transaction(df)
                 
             elif plot_choice == 'n':
-                break
+                continue
             else:
                 print("Invalid Entry: Please Choose 'y' for plot display or 'n' to return to main menu   ")
 
