@@ -9,6 +9,7 @@ class MyExcelfile:
     Columns = ["date", "category", "amount", "description"]
     dateFORMAT = "%m-%d-%Y"
 
+        #load the data into the dataframe from excel if not exist create new
     @classmethod
     def initialize_excel(cls):
         try:
@@ -17,6 +18,7 @@ class MyExcelfile:
             df = pd.DataFrame(columns= cls.Columns)
             df.to_excel(cls.MyFile, header = True, index= False)
 
+    #Add data into the excel sheet
     @classmethod
     def add_entry(cls, date,  category, amount, description):
         new_entry = { "date" : date,
@@ -30,7 +32,7 @@ class MyExcelfile:
             book = load_workbook(cls.MyFile)
 
             # Check if sheet exists
-            sheet_name = 'Sheet1'  # Adjust as per your sheet name
+            sheet_name = 'Sheet1'  
             with pd.ExcelWriter(cls.MyFile, engine='openpyxl',if_sheet_exists='overlay', mode='a') as writer:
                 # Get existing data from sheet
                 startrow =book[sheet_name].max_row
@@ -41,6 +43,8 @@ class MyExcelfile:
 
         print("Entry done successfully!  ")  
 
+
+        #summarizing income, expense and calculating net savings
     @classmethod
     def get_transaction(cls,sdate,edate):
         df = pd.read_excel(cls.MyFile)
@@ -60,12 +64,12 @@ class MyExcelfile:
         total_income = filtered_df[filtered_df["category"]== "Income"]["amount"].sum()
         total_expense = filtered_df[filtered_df["category"] == "Expense"]["amount"].sum()
         print("\n Summary: ")
-        print(f"Total Income is $ {total_income:.2f}")
-        print(f"Total Expense is $ {total_expense: .2f}")
-        print(f"Net Savings is $ {(total_income - total_expense):.2f}")
+        print(f"Total Income is $ {total_income:.2f}") #total income
+        print(f"Total Expense is $ {total_expense: .2f}") #total Expense
+        print(f"Net Savings is $ {(total_income - total_expense):.2f}") #netsavings
 
 
-
+#importing methods from data entry file
 def adddata():
     MyExcelfile.initialize_excel()
     date = get_date("Enter the date of Transaction in 'mm-dd-yyyy' format or press enter for today's date: ", allow_default= True)
@@ -75,6 +79,7 @@ def adddata():
     MyExcelfile.add_entry(date,category,amount,description)
 
 
+#Plotting graphs with matplotlib
 def plot_transaction(df):
     df = pd.read_excel(MyExcelfile.MyFile, sheet_name='Sheet1')
     df['date'] = pd.to_datetime(df['date'], errors='coerce')
@@ -94,7 +99,7 @@ def plot_transaction(df):
     plt.show()
 
 
-
+#creating a user friendly options to be displayed and when the user chooses from the options , functions executed
 def main():
     while True:
         print()
